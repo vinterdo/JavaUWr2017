@@ -1,4 +1,4 @@
-package pl.vinterdo;
+package main.java.pl.vinterdo;
 
 public class Main {
 
