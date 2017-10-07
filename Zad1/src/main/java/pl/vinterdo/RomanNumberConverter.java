@@ -29,13 +29,13 @@ public final class RomanNumberConverter {
         StringBuilder sb = new StringBuilder();
         SortedMap<Integer, String> currentMap = romanDigits;
         while(number > 0) {
-            int curentKey = currentMap.lastKey();
-            if(curentKey > number) {
-                currentMap = currentMap.headMap(curentKey);
+            int currentKey = currentMap.lastKey();
+            if(currentKey > number) {
+                currentMap = currentMap.headMap(currentKey);
                 continue;
             }
-            sb.append(currentMap.get(curentKey));
-            number -= curentKey;
+            sb.append(currentMap.get(currentKey));
+            number -= currentKey;
         }
 
         return sb.toString();
