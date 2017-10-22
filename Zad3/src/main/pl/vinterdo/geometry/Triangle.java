@@ -10,6 +10,9 @@ public class Triangle implements IMovable<Triangle>, IRotatable<Triangle>, IHasL
     public final Vector2 c;
 
     public Triangle(Vector2 a, Vector2 b, Vector2 c) {
+        if(a == null || b == null || c == null) throw new IllegalArgumentException("argument cant be null");
+        if(a.equals(b) || a.equals(c) || b.equals(c)) throw new IllegalArgumentException("you need to use different points to form triangle");
+        if(Line.getFromPoints(a, b).isOnLine(c)) throw new IllegalArgumentException("you cant use points that are on same line to create triangle");
         this.a = a;
         this.b = b;
         this.c = c;
@@ -40,5 +43,14 @@ public class Triangle implements IMovable<Triangle>, IRotatable<Triangle>, IHasL
         Vector2 newC = c.rotate(around, angle);
 
         return new Triangle(newA, newB, newC);
+    }
+
+    @Override
+    public String toString() {
+        return "Triangle{" +
+                "a=" + a +
+                ", b=" + b +
+                ", c=" + c +
+                '}';
     }
 }

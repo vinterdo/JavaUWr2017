@@ -9,6 +9,8 @@ public class Section implements IMovable<Section>, IRotatable<Section>, IHasLine
     public final Vector2 b;
 
     public Section(Vector2 a, Vector2 b) {
+        if(a == null || b == null) throw new IllegalArgumentException("argument cant be null");
+        if(a.equals(b)) throw new IllegalArgumentException("you cant use same point as start and end of section");
         this.a = a;
         this.b = b;
     }
@@ -32,5 +34,13 @@ public class Section implements IMovable<Section>, IRotatable<Section>, IHasLine
         Vector2 newA = a.rotate(around, angle);
         Vector2 newB = b.rotate(around, angle);
         return new Section(newA, newB);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "a=" + a +
+                ", b=" + b +
+                '}';
     }
 }
