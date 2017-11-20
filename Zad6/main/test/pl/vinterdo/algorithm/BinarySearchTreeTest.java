@@ -7,8 +7,7 @@ import static org.junit.Assert.*;
 
 public class BinarySearchTreeTest {
 
-    @Test
-    public void insertGetTest(){
+    private BinarySearchTree<Integer, String> bstMock() {
         BinarySearchTree<Integer, String> bst = new BinarySearchTree<>();
         bst.put(10, "Ten");
         bst.put(15, "Fifteen");
@@ -16,6 +15,12 @@ public class BinarySearchTreeTest {
         bst.put(12, "Twelve");
         bst.put(23, "TwentyThree");
         bst.put(2, "Two");
+        return bst;
+    }
+
+    @Test
+    public void insertGetTest(){
+        BinarySearchTree<Integer, String> bst = bstMock();
 
         assertThat(bst.min(), is(0));
         assertThat(bst.max(), is(23));
@@ -37,4 +42,23 @@ public class BinarySearchTreeTest {
         assertNull(bst.get(-10));
     }
 
+
+    @Test
+    public void removeTest() {
+        BinarySearchTree<Integer, String> bst = bstMock();
+        bst.remove(10);
+        bst.remove(2);
+        bst.remove(12);
+        bst.remove(-10);
+
+        assertNull(bst.get(10));
+        assertNull(bst.get(2));
+        assertNull(bst.get(12));
+        assertNull(bst.get(-10));
+
+        assertThat(bst.min(), is(0));
+        assertThat(bst.max(), is(23));
+        assertThat(bst.get(23), is("TwentyThree"));
+        assertThat(bst.size(), is(3));
+    }
 }

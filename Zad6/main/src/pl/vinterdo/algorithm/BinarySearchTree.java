@@ -53,7 +53,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> extends Dictionary<K, 
     @Override
     public V put(K key, V value) {
         if(root == null) {
-            root = new Node(key, value);
+            root = new Node(key, value, null);
             size++;
             return null;
         }
@@ -64,7 +64,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> extends Dictionary<K, 
         int compare = key.compareTo(node.key);
         if(compare < 0) {
             if(node.lower == null) {
-                node.lower = new Node(key,value);
+                node.lower = new Node(key,value, node);
                 size++;
                 return null;
             }
@@ -74,7 +74,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> extends Dictionary<K, 
         }
         if(compare > 0) {
             if(node.higher == null) {
-                node.higher = new Node(key,value);
+                node.higher = new Node(key,value, node);
                 size++;
                 return null;
             }
@@ -89,16 +89,67 @@ public class BinarySearchTree<K extends Comparable<K>, V> extends Dictionary<K, 
     }
 
     @Override
-    public V remove(Object key) {
+    public V remove(Object key)
+    {
+        return removeRec((K)key, root);
+    }
+
+    private V removeRec(K key, Node node) {
+        if(node == null) {
+            return null;
+        }
+        int compare = key.compareTo(node.key);
+        if(compare == 0) {
+            V toReturn = node.value;
+            Node lower = node.lower;
+            Node higher = node.higher;
+
+            if(lower != null && higher != null) {
+                Node successor = min(node.higher);
+                node.replaceWith(successor);
+                node.lower = lower;
+                node.higher = higher;
+                removeRec(successor.key, node.higher);
+                return toReturn;
+            }
+            if(lower == null && higher == null) {
+                size--;
+                if(node.parent.lower == node) {
+                    node.parent.lower = null;
+                    node.parent = null;
+                    return toReturn;
+                }
+                if(node.parent.higher == node) {
+                    node.parent.higher = null;
+                    node.parent = null;
+                    return toReturn;
+                }
+            }
+            size--;
+            Node replace = lower == null ? higher : lower;
+            node.replaceWith(replace);
+
+            return toReturn;
+        }
+        if(compare > 0) {
+            return removeRec(key, node.higher);
+        }
+        if(compare < 0) {
+            return removeRec(key, node.lower);
+        }
         return null;
     }
 
     public K min() {
-        Node n = root;
+        return min(root).key;
+    }
+
+    private Node min(Node node) {
+        Node n = node;
         while(n.lower != null) {
             n = n.lower;
         }
-        return n.key;
+        return n;
     }
 
     public K max() {
@@ -115,14 +166,23 @@ public class BinarySearchTree<K extends Comparable<K>, V> extends Dictionary<K, 
     }
 
     private class Node {
-        Node(K key, V value) {
+        Node(K key, V value, Node parent) {
             this.value = value;
             this.key = key;
+            this.parent = parent;
         }
 
         K key;
         V value;
         Node lower;
         Node higher;
+        Node parent;
+
+        void replaceWith(Node replace) {
+            key = replace.key;
+            value = replace.value;
+            lower = replace.lower;
+            higher = replace.higher;
+        }
     }
 }
